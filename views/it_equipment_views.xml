@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue tree IT Equipment -->
+    <record id="view_it_equipment_tree" model="ir.ui.view">
+        <field name="name">it.equipment.tree</field>
+        <field name="model">it.equipment</field>
+        <field name="arch" type="xml">
+            <tree string="Équipements">
+                <field name="name" />
+                <field name="serial_number" />
+                <field name="category_id" />
+                <field name="employee_id" />
+                <field name="state" />
+                <field name="is_under_warranty" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vue form IT Equipment -->
+    <record id="view_it_equipment_form" model="ir.ui.view">
+        <field name="name">it.equipment.form</field>
+        <field name="model">it.equipment</field>
+        <field name="arch" type="xml">
+            <form string="Équipement">
+                <header>
+                    <button name="action_assign" string="Affecter" type="object" class="btn-primary" states="draft" />
+                    <button name="action_maintenance" string="Maintenance" type="object" states="assigned" />
+                    <button name="action_retire" string="Retirer" type="object" states="assigned,maintenance" />
+                    <button name="action_back_to_draft" string="Revenir en brouillon" type="object" states="retired" />
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_it_intervention)d" type="action" class="oe_stat_button" icon="fa-wrench">
+                            <field name="maintenance_count" widget="statinfo" string="Interventions" />
+                        </button>
+                    </div>
+                    <group>
+                        <group string="Informations générales">
+                            <field name="name" />
+                            <field name="serial_number" />
+                            <field name="category_id" />
+                            <field name="equipment_type" />
+                        </group>
+                        <group string="Caractéristiques techniques">
+                            <field name="manufacturer" />
+                            <field name="model" />
+                            <field name="processor" />
+                            <field name="ram_gb" />
+                            <field name="storage_gb" />
+                            <field name="os" />
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Dates et garantie">
+                            <field name="acquisition_date" />
+                            <field name="purchase_value" />
+                            <field name="warranty_end_date" />
+                            <field name="is_under_warranty" />
+                            <field name="days_until_warranty_end" />
+                        </group>
+                        <group string="Affectation actuelle">
+                            <field name="employee_id" />
+                            <field name="department_id" />
+                            <field name="location" />
+                        </group>
+                    </group>
+                    <group string="Coûts">
+                        <field name="total_maintenance_cost" />
+                    </group>
+                    <notebook>
+                        <page string="Affectations">
+                            <field name="affectation_ids" nolabel="1" mode="tree">
+                                <tree create="false" edit="false">
+                                    <field name="employee_id" />
+                                    <field name="department_id" />
+                                    <field name="assignment_date" />
+                                    <field name="return_date" />
+                                    <field name="is_current" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Interventions">
+                            <field name="intervention_ids" nolabel="1" mode="tree">
+                                <tree create="false" edit="false">
+                                    <field name="name" />
+                                    <field name="intervention_type" />
+                                    <field name="start_date" />
+                                    <field name="end_date" />
+                                    <field name="cost" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Contrats">
+                            <field name="contract_ids" nolabel="1" mode="tree">
+                                <tree create="false" edit="false">
+                                    <field name="name" />
+                                    <field name="vendor_id" />
+                                    <field name="contract_type" />
+                                    <field name="end_date" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <field name="notes" nolabel="1" placeholder="Notes..." />
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue search IT Equipment -->
+    <record id="view_it_equipment_search" model="ir.ui.view">
+        <field name="name">it.equipment.search</field>
+        <field name="model">it.equipment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="serial_number" />
+                <field name="category_id" />
+                <field name="employee_id" />
+                <filter name="under_warranty" string="Sous garantie" domain="[('is_under_warranty', '=', True)]" />
+                <filter name="assigned" string="Affectés" domain="[('state', '=', 'assigned')]" />
+                <filter name="maintenance" string="En maintenance" domain="[('state', '=', 'maintenance')]" />
+                <filter name="retired" string="Retirés" domain="[('state', '=', 'retired')]" />
+            </search>
+        </field>
+    </record>
+
+    <!-- Vue form IT Equipment Category -->
+    <record id="view_it_equipment_category_form" model="ir.ui.view">
+        <field name="name">it.equipment.category.form</field>
+        <field name="model">it.equipment.category</field>
+        <field name="arch" type="xml">
+            <form string="Catégorie d'équipement">
+                <group>
+                    <field name="name" />
+                    <field name="code" />
+                    <field name="description" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_it_equipment_category_tree" model="ir.ui.view">
+        <field name="name">it.equipment.category.tree</field>
+        <field name="model">it.equipment.category</field>
+        <field name="arch" type="xml">
+            <tree string="Catégories d'équipement">
+                <field name="name" />
+                <field name="code" />
+            </tree>
+        </field>
+    </record>
+</odoo>
